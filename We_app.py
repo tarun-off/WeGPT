@@ -19,6 +19,10 @@ app = FastAPI()
 class ChatRequest(BaseModel):
     user_id: str
     message: str
+    
+@app.get("/")
+async def read_index():
+    return FileResponse("index.html")
 
 @app.post("/chat/{session_id}")
 async def chat(session_id: str, request: Request):
