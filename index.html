@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>WeGPT Chat</title>
+  <style>
+    body { font-family: sans-serif; background: #f2f2f2; padding: 20px; }
+    .chat-box { max-width: 600px; margin: 0 auto; background: white; border-radius: 8px; padding: 20px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    .message { margin-bottom: 10px; }
+    .user { font-weight: bold; color: #007bff; }
+    .bot { font-weight: bold; color: #28a745; }
+    #messages { max-height: 400px; overflow-y: auto; margin-bottom: 20px; }
+    input, button { padding: 10px; font-size: 16px; }
+    #inputBox { width: 80%; }
+  </style>
+</head>
+<body>
+  <div class="chat-box">
+    <h2>WeGPT Chat</h2>
+    <div id="messages"></div>
+    <input id="inputBox" type="text" placeholder="Type your message..." />
+    <button onclick="sendMessage()">Send</button>
+  </div>
+
+  <script>
+    const sessionId = "test123"; // You can dynamically generate this or use user ID
+    const apiBase = "https://wegpt-e2tk.onrender.com"; // Replace with your deployed domain
+
+    async function sendMessage() {
+      const input = document.getElementById("inputBox");
+      const message = input.value.trim();
+      if (!message) return;
+
+      appendMessage("You", message);
+      input.value = "";
+
+      const res = await fetch(`${apiBase}/chat/${sessionId}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: message, sender: "User" }),
+      });
+
+      const data = await res.json();
+      appendMessage("WeGPT", data.response);
+    }
+
+    function appendMessage(sender, text) {
+      const container = document.getElementById("messages");
+      const msgDiv = document.createElement("div");
+      msgDiv.classList.add("message");
+      msgDiv.innerHTML = `<span class="${sender === 'You' ? 'user' : 'bot'}">${sender}:</span> ${text}`;
+      container.appendChild(msgDiv);
+      container.scrollTop = container.scrollHeight;
+    }
+  </script>
+</body>
+</html>
