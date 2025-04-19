@@ -8,6 +8,7 @@ import requests
 import os
 from services.firebase_utils import save_message
 from services.groq_utils import call_groq_model
+from fastapi.responses import FileResponse
 
 # Initialize ChromaDB and embedding model
 client = chromadb.PersistentClient(path="./chroma_db")
@@ -24,8 +25,11 @@ class ChatRequest(BaseModel):
 @app.get("/")
 async def read_index():
     file_path = os.path.join(os.path.dirname(__file__), "index.html")
+    print("Serving HTML from:", file_path)
+    if not os.path.exists(file_path):
+        print("❌ File does not exist!")
     return FileResponse(file_path)
-
+    
 @app.post("/chat/{session_id}")
 async def chat(session_id: str, request: Request):
     data = await request.json()
