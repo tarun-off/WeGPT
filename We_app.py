@@ -5,6 +5,7 @@ from sentence_transformers import SentenceTransformer
 import chromadb
 import uuid
 import requests
+import os
 from services.firebase_utils import save_message
 from services.groq_utils import call_groq_model
 
