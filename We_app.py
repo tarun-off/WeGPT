@@ -6,6 +6,8 @@ import chromadb
 import uuid
 import requests
 import os
+from fastapi.responses import JSONResponse
+from services.firebase_utils import get_chat_history 
 from services.firebase_utils import save_message
 from services.groq_utils import call_groq_model
 from fastapi.responses import FileResponse
@@ -76,6 +78,11 @@ async def add_vector(data: AddVector):
         metadatas=[{"session_id": data.session_id}]
     )
     return {"status": "added", "id": vector_id}
+
+@app.get("/history/{session_id}")
+async def get_history(session_id: str):
+    messages = get_chat_history(session_id)
+    return JSONResponse({"history": messages})
 
 @app.post("/search")
 async def search_vector(data: SearchVector):
